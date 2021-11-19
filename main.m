@@ -48,19 +48,25 @@ for i = 1:nElements
     [Ke,Fe] = element(elementLength,integrationParameter,C);
     [K]     = assem(K,Ke,edof(i,:));
     [F]     = assem(F,Fe,edof(i,:));
+    
+    Me = massmatrix(density, elementLength);
+    [M]     = assem(M,Me,edof(i,:));
 end
 
 %% Schleife über Zeit
+
+
+
 
 totalTime = 1;
 dt  = 0.1;
 u0  = zeros(size(K,1),1);
 v0  = zeros(size(K,1),1);
+for t = 0 : dt : totalTime
 
-
-for t=0:dt:totalTime
 %   (horizontaler) Lastvektor
 load = 2*t; 
+
 
 %% Randbedingungen einbauen
 % Dirichlet-Rand
@@ -75,22 +81,12 @@ boundaryCondition2    = load;
 [F]     = assem(F,Fe(1),BoundaryEdofRight);
 
 
-%% Gleichungsloeser
-d = solveq(K,F,dirichletBoundary);
-
-%% Darstellung Ausgangssituation
-y = zeros(1, nElements + 1);
-plot(q,y,'r-o','LineWidth',3);
-hold on
-
 
 %% Massenmatrix
 
-Me = massmatrix(density, elementLength);
-for i = 1:nElements
-    [M]     = assem(M,Me,edof(i,:));
-end
 
+disp('t = ');
+disp(t);
 [u1, v1] = solveu(F, K, M, u0, v0, dt);
 
 u0 = u1;
