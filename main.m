@@ -52,15 +52,15 @@ end
 
 %% Schleife über Zeit
 
-totalTime = 0.1;
-dt  = 0.01;
+totalTime = 1;
+dt  = 0.1;
 u0  = zeros(size(K,1),1);
 v0  = zeros(size(K,1),1);
 
 
 for t=0:dt:totalTime
 %   (horizontaler) Lastvektor
-load = 20*t; 
+load = 2*t; 
 
 %% Randbedingungen einbauen
 % Dirichlet-Rand
@@ -91,8 +91,7 @@ for i = 1:nElements
     [M]     = assem(M,Me,edof(i,:));
 end
 
-[u1, v1] = solveu(F, K, dirichletBoundary, M, u0, v0, dt);
-disp('u = ');
+[u1, v1] = solveu(F, K, M, u0, v0, dt);
 
 u0 = u1;
 v0 = v1;

@@ -8,3 +8,4 @@ Me(2,1) = 1;     Me(2,2) = 2;
 Me = Me * elementLength * density / 6;
 
 
+
