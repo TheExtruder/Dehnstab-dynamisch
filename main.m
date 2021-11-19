@@ -14,8 +14,7 @@ integrationParameter              = 1;
 % Geometrie
 a   = 0;  b  = 4; 
 
-%   (horizontaler) Lastvektor
-load = 25; 
+
     
 % Materialdaten
 emod    = 100;                 % E-Modul
@@ -51,6 +50,18 @@ for i = 1:nElements
     [F]     = assem(F,Fe,edof(i,:));
 end
 
+%% Schleife über Zeit
+
+totalTime = 0.1;
+dt  = 0.01;
+u0  = zeros(size(K,1),1);
+v0  = zeros(size(K,1),1);
+
+
+for t=0:dt:totalTime
+%   (horizontaler) Lastvektor
+load = 20*t; 
+
 %% Randbedingungen einbauen
 % Dirichlet-Rand
 boundaryCondition1    = 0;
@@ -60,8 +71,8 @@ dirichletBoundary(1,2) = boundaryCondition1;
 boundaryCondition2    = load;
 
 % Randelement
-    [Fe]    = boundaryCondition2;
-    [F]     = assem(F,Fe(1),BoundaryEdofRight);
+[Fe]    = boundaryCondition2;
+[F]     = assem(F,Fe(1),BoundaryEdofRight);
 
 
 %% Gleichungsloeser
@@ -72,19 +83,6 @@ y = zeros(1, nElements + 1);
 plot(q,y,'r-o','LineWidth',3);
 hold on
 
-%% Darstellung Gleichgewichtslage
-q = q + d;                      % Update, Konfiguration Gleichgewichtslage
-plot(q,y,'b-o','LineWidth',2);
-hold off
-
-[newElementData] = extract(edof,q); 
-
-disp('Ausgangslage:'  )
-disp(elementData);
-disp('Verschiebungsvektor:'  )
-disp(d);
-disp('Gleichgewichtslage:'  )
-disp(newElementData);
 
 %% Massenmatrix
 
@@ -92,19 +90,10 @@ Me = massmatrix(density, elementLength);
 for i = 1:nElements
     [M]     = assem(M,Me,edof(i,:));
 end
-invM = inv(M);
-a = -invM * (K * d - load); %acceleration
-disp(a);
 
-dt  = 1;
-dn  = d;
-vn  = 1;
+[u1, v1] = solveu(F, K, dirichletBoundary, M, u0, v0, dt);
+disp('u = ');
 
-dn1 = dn + dt * vn;
-vn1 = vn + dt * a;
-
-dn2 = dn1 + dt * vn;
-vn2 = vn1 + dt * a;
-
-dt = 1;
-
+u0 = u1;
+v0 = v1;
+end
