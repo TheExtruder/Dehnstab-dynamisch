@@ -59,14 +59,14 @@ end
 
 
 totalTime = 1;
-dt  = 0.1;
+dt  = 0.2;
 u0  = zeros(size(K,1),1);
 v0  = zeros(size(K,1),1);
+
 for t = 0 : dt : totalTime
 
 %   (horizontaler) Lastvektor
-load = 2*t; 
-
+load = sin(t*pi); 
 
 %% Randbedingungen einbauen
 % Dirichlet-Rand
@@ -77,6 +77,7 @@ dirichletBoundary(1,2) = boundaryCondition1;
 boundaryCondition2    = load;
 
 % Randelement
+F       = sparse(nDof,1);
 [Fe]    = boundaryCondition2;
 [F]     = assem(F,Fe(1),BoundaryEdofRight);
 
@@ -87,8 +88,8 @@ boundaryCondition2    = load;
 
 disp('t = ');
 disp(t);
-[u1, v1] = solveu(F, K, M, u0, v0, dt);
-
+disp(u0);
+[u1, v1] = solveu(F, K, M, u0, v0, dt, dirichletBoundary);
 u0 = u1;
 v0 = v1;
 end
