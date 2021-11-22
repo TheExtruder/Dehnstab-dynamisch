@@ -13,7 +13,7 @@ integrationParameter              = 1;
 
 % Geometrie
 a   = 0;  b  = 4; 
-
+uges = 0;
 
     
 % Materialdaten
@@ -59,7 +59,7 @@ end
 
 
 totalTime = 1;
-dt  = 0.2;
+dt  = 0.001;
 u0  = zeros(size(K,1),1);
 v0  = zeros(size(K,1),1);
 
@@ -89,7 +89,9 @@ F       = sparse(nDof,1);
 disp('t = ');
 disp(t);
 disp(u0);
+disp(uges);
 [u1, v1] = solveu(F, K, M, u0, v0, dt, dirichletBoundary);
+uges = uges + u1;
 u0 = u1;
 v0 = v1;
 end
