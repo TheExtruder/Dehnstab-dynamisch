@@ -53,10 +53,14 @@ for i = 1:nElements
     [M]     = assem(M,Me,edof(i,:));
 end
 
+%% Darstellung Ausgangssituation
+y = zeros(1, nElements + 1);
+plot(q,y,'r-o','LineWidth',3);
+
+
+
+
 %% Schleife über Zeit
-
-
-
 
 totalTime = 1;
 dt  = 0.001;
@@ -89,9 +93,14 @@ F       = sparse(nDof,1);
 disp('t = ');
 disp(t);
 disp(u0);
-disp(uges);
+disp(q);
 [u1, v1] = solveu(F, K, M, u0, v0, dt, dirichletBoundary);
-uges = uges + u1;
+
+q = q + u1;
 u0 = u1;
 v0 = v1;
+
+
+
+
 end
